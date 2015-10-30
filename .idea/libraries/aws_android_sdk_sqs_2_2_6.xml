@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="aws-android-sdk-sqs-2.2.6">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-android-sdk-sqs/2.2.6/b665d7fa1cfbf160094ea09486c457885a787484/aws-android-sdk-sqs-2.2.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.amazonaws/aws-android-sdk-sqs/2.2.6/a1fc1d5a7b921dd602a1f6d27a143e232482b785/aws-android-sdk-sqs-2.2.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

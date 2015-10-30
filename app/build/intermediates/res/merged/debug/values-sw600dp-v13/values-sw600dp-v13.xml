@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/Users/apple/Development/Android/MySampleApp/app/build/intermediates/exploded-aar/com.github.shell-software/fab/1.1.2/res/values-sw600dp-v13/values.xml -->
+    <eat-comment/>
+    <dimen name="fab_margin">24dp</dimen>
+</resources>
