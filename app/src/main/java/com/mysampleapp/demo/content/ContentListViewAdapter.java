@@ -3,6 +3,7 @@ package com.mysampleapp.demo.content;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.amazonaws.mobile.content.ContentManager;
 import com.amazonaws.mobile.content.ContentProgressListener;
 import com.amazonaws.mobile.content.ContentRemovedListener;
 import com.amazonaws.mobile.content.ContentState;
+import com.amazonaws.mobile.content.FileContent;
 import com.amazonaws.mobile.util.StringFormatUtils;
 import com.mysampleapp.R;
 
@@ -175,6 +177,9 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
             case CACHED:
                 // Show the item as available by displaying the check icon.
                 downloadImage.setImageResource(R.mipmap.icon_check);
+               File file =  ((FileContent)contentItem).getFile();
+                downloadImage.setImageURI(Uri.fromFile(file));
+
                 break;
             case CACHED_WITH_NEWER_VERSION_AVAILABLE:
                 // Show the check mark with the download icon on top.
