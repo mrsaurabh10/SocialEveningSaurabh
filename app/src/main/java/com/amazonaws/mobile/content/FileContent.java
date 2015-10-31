@@ -13,6 +13,7 @@ import com.amazonaws.util.Md5Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 public class FileContent implements ContentItem {
     /** The underlying file reference. */
@@ -63,6 +64,16 @@ public class FileContent implements ContentItem {
     @Override
     public void setContentState(final ContentState contentState) {
         this.state = contentState;
+    }
+
+    @Override
+    public Map<String, String> getUserMetaData() {
+        return null;
+    }
+
+    @Override
+    public void setUserMetaData(Map<String, String> metaData) {
+
     }
 
     /**

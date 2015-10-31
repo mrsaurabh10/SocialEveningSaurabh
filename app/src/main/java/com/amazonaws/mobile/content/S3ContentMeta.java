@@ -9,6 +9,8 @@ package com.amazonaws.mobile.content;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 
+import java.util.Map;
+
 public class S3ContentMeta implements ContentItem {
     private final ObjectMetadata objectMetadata;
     final String objectKey;
@@ -50,6 +52,16 @@ public class S3ContentMeta implements ContentItem {
     @Override
     public void setContentState(final ContentState contentState) {
         this.contentState = contentState;
+    }
+
+    @Override
+    public Map<String, String> getUserMetaData() {
+        return objectMetadata.getUserMetadata();
+    }
+
+    @Override
+    public void setUserMetaData(Map<String, String> metaData) {
+
     }
 
 

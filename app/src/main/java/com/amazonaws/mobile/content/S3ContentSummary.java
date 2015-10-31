@@ -9,6 +9,8 @@ package com.amazonaws.mobile.content;
 
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
+import java.util.Map;
+
 /**
  * Represents metadata for a file object in S3. Use ContentManager.getContent(...) to retrieve the
  * file contents.
@@ -61,5 +63,15 @@ public class S3ContentSummary implements ContentItem {
     @Override
     public void setContentState(final ContentState contentState) {
         this.contentState = contentState;
+    }
+
+    @Override
+    public Map<String, String> getUserMetaData() {
+        return null;
+    }
+
+    @Override
+    public void setUserMetaData(Map<String, String> metaData) {
+
     }
 }

@@ -1942,7 +1942,8 @@ containing a value of this type.
         public static final int sign_in_button_width=0x7f090061;
         public static final int sign_in_separator_height=0x7f090062;
         public static final int sign_in_text_margin=0x7f090063;
-        public static final int text_size_small_medium=0x7f090064;
+        public static final int text_size_small=0x7f090064;
+        public static final int text_size_small_medium=0x7f090065;
     }
     public static final class drawable {
         public static final int abc_ab_share_pack_mtrl_alpha=0x7f020000;
@@ -2133,11 +2134,11 @@ containing a value of this type.
         public static final int content_cache_summary_label=0x7f0d0086;
         public static final int content_cache_use_label=0x7f0d0088;
         public static final int content_cache_use_value=0x7f0d008c;
-        public static final int content_delivery_download_percentage=0x7f0d0083;
-        public static final int content_delivery_favorite_image=0x7f0d0082;
-        public static final int content_delivery_file_download_image=0x7f0d0084;
-        public static final int content_delivery_file_name=0x7f0d0080;
-        public static final int content_delivery_file_size_text=0x7f0d0081;
+        public static final int content_delivery_download_percentage=0x7f0d0082;
+        public static final int content_delivery_favorite_image=0x7f0d0084;
+        public static final int content_delivery_file_download_image=0x7f0d0080;
+        public static final int content_delivery_file_name=0x7f0d0081;
+        public static final int content_delivery_file_size_text=0x7f0d0083;
         public static final int content_path=0x7f0d0085;
         public static final int createTeam_action_button=0x7f0d00b4;
         public static final int custom=0x7f0d004e;

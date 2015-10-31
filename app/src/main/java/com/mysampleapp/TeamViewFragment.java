@@ -71,7 +71,7 @@ public class TeamViewFragment extends DemoFragmentBase {
                             public void onComplete(final UserFileManager userFileManager) {
                                 TeamViewFragment.this.userFileManager = userFileManager;
                                 createContentList(getView(), userFileManager);
-                                //userFileManager.setContentRemovedListener(contentListItems);
+                                userFileManager.setContentRemovedListener(contentListItems);
                                 dialog.dismiss();
                                 refreshContent("");
                             }
@@ -146,8 +146,11 @@ public class TeamViewFragment extends DemoFragmentBase {
                         // Add the item to the list.
                         contentListItems.add(new ContentListItem(contentItem));
 
+                       userFileManager.getContent(contentItem.getFilePath(), contentItem.getSize(),
+                               ContentDownloadPolicy.DOWNLOAD_ALWAYS, false, contentListItems);
+
                         userFileManager.getContent(contentItem.getFilePath(), contentItem.getSize(),
-                                ContentDownloadPolicy.DOWNLOAD_ALWAYS, false, contentListItems);
+                                ContentDownloadPolicy.DOWNLOAD_METADATA, false, contentListItems);
 
                         // If the content is transferring, ensure the progress listener is set.
                         final ContentState contentState = contentItem.getContentState();

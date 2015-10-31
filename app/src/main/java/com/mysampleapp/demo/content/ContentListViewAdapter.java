@@ -24,6 +24,7 @@ import com.mysampleapp.R;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
     implements ContentProgressListener, ContentRemovedListener {
@@ -82,7 +83,7 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
     @Override
     public View getView(final int position, final View convertView, final ViewGroup parent) {
         final LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        return generateContentItem(layoutInflater, getItem(position), convertView);
+        return generateContentItem(layoutInflater, getItem(position), convertView, parent);
     }
 
     /**
@@ -97,7 +98,7 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
     }
 
     private View generateContentItem(final LayoutInflater inflater, final ContentListItem listItem,
-                                     final View convertView) {
+                                     final View convertView, ViewGroup parent) {
         final ContentItem contentItem = listItem.getContentItem();
         final View itemView;
         final TextView fileNameText;
@@ -116,7 +117,7 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
             favoriteImage = holder.favoriteImage;
         } else {
             itemView = inflater.inflate(
-                R.layout.demo_content_list_item, null);
+                R.layout.demo_content_list_item, parent,false);
             holder = new ViewHolder();
             holder.fileNameText = fileNameText = (TextView) itemView.findViewById(
                 R.id.content_delivery_file_name);
@@ -128,13 +129,14 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
                 R.id.content_delivery_download_percentage);
             holder.favoriteImage = favoriteImage = (ImageView) itemView.findViewById(
                 R.id.content_delivery_favorite_image);
+            itemView.setMinimumHeight(100);
             itemView.setTag(holder);
         }
 
         final String displayName = contentItem.getFilePath()
             .substring(pathProvider.getCurrentPath()
                 .length());
-        fileNameText.setText(displayName.isEmpty() ? ".." : displayName);
+        //fileNameText.setText(displayName.isEmpty() ? ".." : displayName);
         fileNameText.setTextColor(
             ContentState.REMOTE_DIRECTORY.equals(contentItem.getContentState()) ? Color.BLUE : Color.BLACK);
 
@@ -198,6 +200,15 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
         }
 
         final String contentName = contentItem.getFilePath();
+        final ContentListItem item = contentListItemMap.get(contentItem.getFilePath());
+        final Map<String,String> userMetaData = item.getMetaData();
+
+        if (userMetaData!=null && userMetaData.containsKey("test")){
+            fileNameText.setText(userMetaData.get("test"));
+        }else{
+            fileNameText.setText("");
+        }
+
         if (contentManager.isContentPinned(contentName)) {
             favoriteImage.setImageResource(R.mipmap.icon_star);
             favoriteImage.setVisibility(View.VISIBLE);;
@@ -240,7 +251,11 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
                 " but is not in the content list.", contentItem.getFilePath()));
             return;
         }
+
         item.setContentItem(contentItem);
+        if(contentItem.getUserMetaData()!=null){
+            item.setMetaData(contentItem.getUserMetaData());
+        }
 
         // sort calls notifyDataSetChanged()
         sort(ContentListItem.contentAlphebeticalComparator);

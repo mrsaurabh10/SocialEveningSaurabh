@@ -449,6 +449,45 @@ public class ContentManager implements Iterable<ContentItem> {
                 } else {
                     localFile = localContentCache.get(filePath);
 
+                    if(policy == ContentDownloadPolicy.DOWNLOAD_METADATA){
+                        try {
+                            final String s3Key = s3DirPrefix != null ? s3DirPrefix + filePath : filePath;
+                            final ObjectMetadata objectMeta =
+                                    s3Client.getObjectMetadata(bucket, s3Key);
+
+                            // Check if the object is transferring and adjust the state appropriately.
+                            final ContentState contentState;
+                            if (transferHelper.isTransferring(filePath)) {
+                                if (transferHelper.isTransferWaiting(filePath)) {
+                                    contentState = ContentState.TRANSFER_WAITING;
+                                } else {
+                                    contentState = ContentState.TRANSFERRING;
+                                }
+                            } else {
+                                contentState = ContentState.REMOTE;
+                            }
+
+                            ThreadUtils.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listener.onSuccess(
+                                            new S3ContentMeta(filePath, objectMeta, contentState));
+                                }
+                            });
+                        } catch (final AmazonServiceException ex) {
+                            Log.d(LOG_TAG, ex.getMessage(), ex);
+                            if (listener != null) {
+                                ThreadUtils.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        listener.onError(filePath, ex);
+                                    }
+                                });
+                            }
+                        }
+                        return;
+                    }
+
                     if (policy == ContentDownloadPolicy.DOWNLOAD_METADATA_IF_NOT_CACHED && localFile == null) {
                         try {
                             final String s3Key = s3DirPrefix != null ? s3DirPrefix + filePath : filePath;

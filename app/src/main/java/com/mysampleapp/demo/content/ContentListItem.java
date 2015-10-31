@@ -3,6 +3,7 @@ package com.mysampleapp.demo.content;
 import com.amazonaws.mobile.content.ContentItem;
 
 import java.util.Comparator;
+import java.util.Map;
 
 public class ContentListItem {
     /** The underlying contentItem. */
@@ -10,6 +11,8 @@ public class ContentListItem {
 
     /** The bytes transferred for progress updates. */
     private long bytesTransferred;
+
+    private Map<String,String> mUserMetaData;
 
     public ContentListItem(final ContentItem contentItem) {
         this.contentItem = contentItem;
@@ -44,5 +47,13 @@ public class ContentListItem {
 
     public void setContentItem(final ContentItem contentItem) {
         this.contentItem = contentItem;
+    }
+
+    public void setMetaData(Map<String,String> userMetaData){
+        mUserMetaData = userMetaData;
+    }
+
+    public Map<String,String> getMetaData(){
+        return mUserMetaData;
     }
 }

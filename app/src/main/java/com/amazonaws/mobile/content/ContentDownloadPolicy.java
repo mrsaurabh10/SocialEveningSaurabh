@@ -23,5 +23,7 @@ public enum ContentDownloadPolicy {
     /** Retrieve the file from the local cache if it exists, but if not locally cached then
      * download the remote content metadata and return a remote content item containing the
      * metadata. */
-    DOWNLOAD_METADATA_IF_NOT_CACHED
+    DOWNLOAD_METADATA_IF_NOT_CACHED,
+    DOWNLOAD_METADATA
+
 }

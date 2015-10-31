@@ -322,6 +322,7 @@
     <dimen name="sign_in_button_width">240dp</dimen>
     <dimen name="sign_in_separator_height">2dp</dimen>
     <dimen name="sign_in_text_margin">20dp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_small_medium">16sp</dimen>
     <!-- From: file:/Users/apple/Development/Android/MySampleApp/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values/values.xml -->
     <eat-comment/>

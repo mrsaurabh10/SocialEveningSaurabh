@@ -8,6 +8,7 @@
 package com.amazonaws.mobile.content;
 
 import java.io.File;
+import java.util.Map;
 
 /** All Content managed by ContentManager implements this interface. */
 public interface ContentItem {
@@ -36,4 +37,16 @@ public interface ContentItem {
      * @param contentState the new content state.
      */
     void setContentState(final ContentState contentState);
+
+    /**
+     * @return the UserMeta Data for this content, See {@link ContentState}
+     */
+    Map<String, String> getUserMetaData ();
+
+    /**
+     * Set the content state for this content item.
+     * @param contentState the new content state.
+     */
+    void setUserMetaData(Map<String,String> metaData);
+
 }
