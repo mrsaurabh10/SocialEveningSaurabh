@@ -19,6 +19,7 @@ import com.amazonaws.mobile.downloader.ResponseHandler;
 import com.amazonaws.mobile.downloader.query.DownloadState;
 import com.amazonaws.mobile.util.StringFormatUtils;
 import com.amazonaws.mobile.util.ThreadUtils;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 
 import java.io.File;
 import java.io.IOException;
@@ -253,6 +254,11 @@ public class CloudFrontTransferHelper implements TransferHelper, HttpDownloadLis
     @Override
     public void upload(final File file, final String filePath, final ContentProgressListener listener) {
         throw new UnsupportedOperationException("Upload unsupported.");
+    }
+
+    @Override
+    public void upload(File file, String filePath, ContentProgressListener listener, ObjectMetadata metadata) {
+
     }
 
     public synchronized void setProgressListener(final String relativeFilePath, final ContentProgressListener listener) {

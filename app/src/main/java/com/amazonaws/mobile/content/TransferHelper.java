@@ -7,6 +7,8 @@ package com.amazonaws.mobile.content;
 //
 
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+
 import java.io.File;
 
 public interface TransferHelper {
@@ -14,6 +16,7 @@ public interface TransferHelper {
 
     void download(String filePath, long fileSize, ContentProgressListener listener);
     void upload(File file, String filePath, ContentProgressListener listener);
+    void upload(File file, String filePath,ContentProgressListener listener, ObjectMetadata metadata);
     void setProgressListener(String filePath, ContentProgressListener listener);
     void clearProgressListeners();
     long getSizeTransferring();

@@ -18,6 +18,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import java.io.File;
@@ -190,6 +191,38 @@ import java.util.List;
                 listener.onError(filePath, ex);
             }
         });
+    }
+
+    @Override
+    public void upload(final File file, final String filePath, final ContentProgressListener listener, ObjectMetadata metadata) {
+
+        final String key = s3DirPrefix + filePath;
+        final TransferObserver observer = transferUtility.upload(bucket,key,file,metadata);
+        observer.setTransferListener(new TransferListener() {
+            @Override
+            public void onStateChanged(final int id, final TransferState state) {
+                if (state == TransferState.COMPLETED) {
+                    final S3ObjectSummary summary = new S3ObjectSummary();
+                    summary.setBucketName(bucket);
+                    summary.setKey(key);
+                    summary.setSize(file.length());
+                    summary.setLastModified(new Date());
+                    listener.onSuccess(new S3ContentSummary(summary, filePath));
+                }
+            }
+
+            @Override
+            public void onProgressChanged(final int id, final long bytesCurrent,
+                                          final long bytesTotal) {
+                listener.onProgressUpdate(filePath, false, bytesCurrent, bytesTotal);
+            }
+
+            @Override
+            public void onError(final int id, final Exception ex) {
+                listener.onError(filePath, ex);
+            }
+        });
+
     }
 
     /**

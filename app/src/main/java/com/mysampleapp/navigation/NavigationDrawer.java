@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.amazonaws.mobile.AWSMobileClient;
 import com.amazonaws.mobile.user.IdentityManager;
 import com.amazonaws.mobile.user.IdentityProvider;
+import com.mysampleapp.CaptureImageFragment;
 import com.mysampleapp.R;
 import com.mysampleapp.TeamViewFragment;
 import com.mysampleapp.demo.DemoConfiguration;
@@ -195,6 +196,22 @@ public class NavigationDrawer {
         containingActivity.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(fragmentContainerId, fragment, TeamViewFragment.class.getSimpleName())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
+
+        // Set the title for the fragment.
+        final ActionBar actionBar = containingActivity.getSupportActionBar();
+        actionBar.setTitle(R.string.app_name);
+        closeDrawer();
+
+    }
+
+    public void showNewTeamPage(){
+        final Fragment fragment = new CaptureImageFragment();
+
+        containingActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(fragmentContainerId, fragment, CaptureImageFragment.class.getSimpleName())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
 

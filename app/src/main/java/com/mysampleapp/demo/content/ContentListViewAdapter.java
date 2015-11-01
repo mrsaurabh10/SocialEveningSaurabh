@@ -2,6 +2,8 @@ package com.mysampleapp.demo.content;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,10 +22,18 @@ import com.amazonaws.mobile.content.ContentProgressListener;
 import com.amazonaws.mobile.content.ContentRemovedListener;
 import com.amazonaws.mobile.content.ContentState;
 import com.amazonaws.mobile.content.FileContent;
+import com.amazonaws.mobile.content.S3ContentMeta;
+import com.amazonaws.mobile.content.UserFileManager;
 import com.amazonaws.mobile.util.StringFormatUtils;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.mysampleapp.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,9 +46,21 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
     private final ContentManager contentManager;
     private final ContentListPathProvider pathProvider;
     private final ContentListCacheObserver cacheObserver;
+    private UserFileManager userFileManager;
+
+    public void setUserFileManager(UserFileManager fileManager){
+        userFileManager = fileManager;
+    }
 
     /** Map from file name to content list item. */
     HashMap<String, ContentListItem> contentListItemMap = new HashMap<>();
+
+    private String userIdentity;
+
+    public void setUserIdentity(String userId){
+        userIdentity = userId;
+    }
+
 
     public interface ContentListPathProvider {
         String getCurrentPath();
@@ -95,6 +118,7 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
         ImageView downloadImage;
         TextView downloadPercentText;
         ImageView favoriteImage;
+        Button joinNowBtn;
     }
 
     private View generateContentItem(final LayoutInflater inflater, final ContentListItem listItem,
@@ -107,30 +131,98 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
         final TextView downloadPercentText;
         final ViewHolder holder;
         final ImageView favoriteImage;
-        if (convertView != null) {
-            itemView = convertView;
-            holder = (ViewHolder) itemView.getTag();
-            fileNameText = holder.fileNameText;
-            fileSizeText = holder.fileSizeText;
-            downloadImage = holder.downloadImage;
-            downloadPercentText = holder.downloadPercentText;
-            favoriteImage = holder.favoriteImage;
-        } else {
+        final Button joinNowBtn;
+        final String contentName = contentItem.getFilePath();
+        final ContentListItem item = contentListItemMap.get(contentItem.getFilePath());
+        final Map<String,String> userMetaData = item.getMetaData();
+//        if (convertView != null) {
+//            itemView = convertView;
+//            holder = (ViewHolder) itemView.getTag();
+//            fileNameText = holder.fileNameText;
+//            fileSizeText = holder.fileSizeText;
+//            downloadImage = holder.downloadImage;
+//            downloadPercentText = holder.downloadPercentText;
+//            favoriteImage = holder.favoriteImage;
+//            joinNowBtn = holder.joinNowBtn;
+//        }
+//        else
+        {
             itemView = inflater.inflate(
                 R.layout.demo_content_list_item, parent,false);
             holder = new ViewHolder();
             holder.fileNameText = fileNameText = (TextView) itemView.findViewById(
-                R.id.content_delivery_file_name);
+                    R.id.content_delivery_file_name);
             holder.fileSizeText = fileSizeText = (TextView) itemView.findViewById(
-                R.id.content_delivery_file_size_text);
+                    R.id.content_delivery_file_size_text);
             holder.downloadImage = downloadImage = (ImageView) itemView
                 .findViewById(R.id.content_delivery_file_download_image);
             holder.downloadPercentText = downloadPercentText = (TextView) itemView.findViewById(
-                R.id.content_delivery_download_percentage);
+                    R.id.content_delivery_download_percentage);
             holder.favoriteImage = favoriteImage = (ImageView) itemView.findViewById(
                 R.id.content_delivery_favorite_image);
+            holder.joinNowBtn = joinNowBtn = (Button) itemView.findViewById(R.id.joinNowBtn);
             itemView.setMinimumHeight(100);
             itemView.setTag(holder);
+
+            joinNowBtn.setTag(contentItem.getFilePath());
+            fileNameText.setTag(contentItem.getFilePath());
+
+            joinNowBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Log.v(LOG_TAG, "The local path Content Path is  " + userFileManager.getLocalContentPath());
+                    Log.v(LOG_TAG, "The file name is " + item.getContentItem().getFilePath());
+
+                    ContentListItem item = contentListItemMap.get(joinNowBtn.getTag());
+
+                    Map<String, String> userSMetadata = item.getMetaData();
+                    if (userSMetadata != null) {
+                        String users = userSMetadata.get("team-users");
+                        joinNowBtn.setText("Joining....");
+                        if (users != null) {
+                            users += ";" + userIdentity;
+                            userSMetadata.put("team-users", users);
+                        } else {
+                            userSMetadata.put("team-users", userIdentity);
+                        }
+
+                        userFileManager.getLocalContentPath();
+                        ObjectMetadata objectMetadata = new ObjectMetadata();
+                        objectMetadata.setUserMetadata(userSMetadata);
+
+                        final File file = new File(userFileManager.getLocalContentPath(), item.getContentItem().getFilePath());
+
+
+                        userFileManager.uploadContent(file, file.getName(), new ContentProgressListener() {
+                            @Override
+                            public void onSuccess(final ContentItem contentItem) {
+                                //contentListItems.add(new ContentListItem(contentItem));
+                                //contentListItems.sort(ContentListItem.contentAlphebeticalComparator);
+                                ///contentListItems.notifyDataSetChanged();
+                                joinNowBtn.setText("Joined");
+                                joinNowBtn.setEnabled(false);
+                            }
+
+                            @Override
+                            public void onProgressUpdate(final String fileName, final boolean isWaiting,
+                                                         final long bytesCurrent, final long bytesTotal) {
+                                //                     dialog.setProgress((int) bytesCurrent);
+                            }
+
+                            @Override
+                            public void onError(final String fileName, final Exception ex) {
+                                //                   dialog.dismiss();
+                                //showError(R.string.user_files_browser_error_message_upload_file,
+                                //      ex.getMessage());
+                            }
+                        }, objectMetadata);
+
+
+                    }
+                }
+            });
+
         }
 
         final String displayName = contentItem.getFilePath()
@@ -148,7 +240,8 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
             favoriteImage.setVisibility(View.INVISIBLE);
             return itemView;
         } else {
-            fileSizeText.setText(StringFormatUtils.getBytesString(contentItem.getSize(), false));
+           // fileSizeText.setText(StringFormatUtils.getBytesString(contentItem.getSize(), false));
+            fileSizeText.setText(displayName);
         }
 
         if (ContentState.isTransferring(contentState) && listItem.getBytesTransferred() == 0) {
@@ -178,9 +271,26 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
                 break;
             case CACHED:
                 // Show the item as available by displaying the check icon.
-                downloadImage.setImageResource(R.mipmap.icon_check);
+                //downloadImage.setImageResource(R.mipmap.icon_check);
                File file =  ((FileContent)contentItem).getFile();
-                downloadImage.setImageURI(Uri.fromFile(file));
+                //show thumbnail
+//                Bitmap imgthumBitmap=null;
+//                final int THUMBNAIL_SIZE = 64;
+//                try {
+//                    FileInputStream fis = new FileInputStream(file);
+//                    imgthumBitmap = BitmapFactory.decodeStream(fis);
+//
+//                    imgthumBitmap = Bitmap.createScaledBitmap(imgthumBitmap,
+//                            THUMBNAIL_SIZE, THUMBNAIL_SIZE, false);
+//
+//                    ByteArrayOutputStream bytearroutstream = new ByteArrayOutputStream();
+//                    imgthumBitmap.compress(Bitmap.CompressFormat.JPEG, 100,bytearroutstream);
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+                downloadImage.setImageBitmap(decodeFile(file));
+                //downloadImage.setImageURI(Uri.fromFile(file));
+                //downloadImage.setImageBitmap(imgthumBitmap);
 
                 break;
             case CACHED_WITH_NEWER_VERSION_AVAILABLE:
@@ -199,14 +309,45 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
             }
         }
 
-        final String contentName = contentItem.getFilePath();
-        final ContentListItem item = contentListItemMap.get(contentItem.getFilePath());
-        final Map<String,String> userMetaData = item.getMetaData();
 
-        if (userMetaData!=null && userMetaData.containsKey("test")){
-            fileNameText.setText(userMetaData.get("test"));
-        }else{
+
+        //ContentListItem item1 = contentListItemMap.get(fileNameText.getTag());
+        //Map<String,String> userSMetaData = item1.getMetaData();
+
+        if (userMetaData!=null && userMetaData.containsKey("team-name")){
+            final String displayTeamName = userMetaData.get("team-name");
+
+            fileNameText.setText(displayTeamName);
+        }else
             fileNameText.setText("");
+
+        //check for the ownership and users list
+        if(userMetaData!= null){
+            String ownerId = userMetaData.get("team-owner");
+            boolean isOwnerOrUser = false;
+            if ( ownerId != null && ownerId.equalsIgnoreCase(userIdentity)){
+                //joinNowBtn.setVisibility(View.GONE);
+                isOwnerOrUser = true;
+                joinNowBtn.setText("Owner");
+                joinNowBtn.setEnabled(true);
+            }
+
+            String usersList = userMetaData.get("team-users");
+            if(usersList!=null ){
+                String[] usersArray = usersList.split(";");
+                ArrayList<String> usersListArray = new ArrayList<String>(Arrays.asList(usersArray));
+                if(usersListArray.contains(userIdentity)){
+                    isOwnerOrUser = true;
+                    joinNowBtn.setText("Member");
+                    joinNowBtn.setEnabled(true);
+                }
+            }
+//            if(isOwnerOrUser){
+//                joinNowBtn.setVisibility(View.INVISIBLE);
+//            }else{
+//                joinNowBtn.setVisibility(View.VISIBLE);
+//            }
+
         }
 
         if (contentManager.isContentPinned(contentName)) {
@@ -248,12 +389,13 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
         final ContentListItem item = contentListItemMap.get(contentItem.getFilePath());
         if (item == null) {
             Log.w(LOG_TAG, String.format("Warning: item '%s' completed," +
-                " but is not in the content list.", contentItem.getFilePath()));
+                    " but is not in the content list.", contentItem.getFilePath()));
             return;
         }
 
         item.setContentItem(contentItem);
-        if(contentItem.getUserMetaData()!=null){
+
+        if (contentItem instanceof S3ContentMeta){
             item.setMetaData(contentItem.getUserMetaData());
         }
 
@@ -343,5 +485,32 @@ public class ContentListViewAdapter extends ArrayAdapter<ContentListItem>
         errorDialogBuilder.setNegativeButton(
             getContext().getString(R.string.content_dialog_ok), null);
         errorDialogBuilder.show();
+    }
+
+
+    // Decodes image and scales it to reduce memory consumption
+    private Bitmap decodeFile(File f) {
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
+
+            // The new size we want to scale to
+            final int REQUIRED_SIZE=70;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+                    o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+                scale *= 2;
+            }
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+        } catch (FileNotFoundException e) {}
+        return null;
     }
 }

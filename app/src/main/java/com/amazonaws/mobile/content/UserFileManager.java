@@ -165,6 +165,10 @@ public class UserFileManager extends ContentManager {
         transferHelper.upload(file, filePath, listener);
     }
 
+    public void uploadContent(final File file, final String filePath, final ContentProgressListener listener, ObjectMetadata metadata) {
+        transferHelper.upload(file, filePath, listener,metadata);
+    }
+
     /**
      * Handles a response to an operation which invokes some service call.
      */

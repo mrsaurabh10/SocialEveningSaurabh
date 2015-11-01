@@ -271,24 +271,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         final FragmentManager fragmentManager = this.getSupportFragmentManager();
-        if (fragmentManager.findFragmentByTag(HomeDemoFragment.class.getSimpleName()) == null) {
-            final Class fragmentClass = HomeDemoFragment.class;
-            // if we aren't on the home fragment, navigate home.
-            final Fragment fragment = Fragment.instantiate(this, fragmentClass.getName());
-
-            fragmentManager
-                .beginTransaction()
-                .replace(R.id.main_fragment_container, fragment, fragmentClass.getSimpleName())
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
-
-            // Set the title for the fragment.
-            final ActionBar actionBar = this.getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setTitle(getString(R.string.app_name));
-            }
-            return;
-        }
+//        if (fragmentManager.findFragmentByTag(HomeDemoFragment.class.getSimpleName()) == null) {
+//            final Class fragmentClass = HomeDemoFragment.class;
+//            // if we aren't on the home fragment, navigate home.
+//            final Fragment fragment = Fragment.instantiate(this, fragmentClass.getName());
+//
+//            fragmentManager
+//                .beginTransaction()
+//                .replace(R.id.main_fragment_container, fragment, fragmentClass.getSimpleName())
+//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                .commit();
+//
+//            // Set the title for the fragment.
+//            final ActionBar actionBar = this.getSupportActionBar();
+//            if (actionBar != null) {
+//                actionBar.setTitle(getString(R.string.app_name));
+//            }
+//            return;
+//        }
         super.onBackPressed();
     }
 

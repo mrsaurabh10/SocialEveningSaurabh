@@ -557,6 +557,7 @@
     <string name="user_files_browser_progress_dialog_message_delete_item">Deleting \'%s\'</string>
     <string name="user_files_browser_progress_dialog_message_download_item">Downloading item \'%s\'</string>
     <string name="user_files_browser_progress_dialog_message_upload_file">Uploading file \'%s\'</string>
+    <string name="user_files_browser_progress_dialog_message_upload_image">Uploading Team Image</string>
     <string name="user_files_browser_upload_text">Upload</string>
     <string name="user_files_demo_button_private">PRIVATE</string>
     <string name="user_files_demo_button_public">PUBLIC</string>

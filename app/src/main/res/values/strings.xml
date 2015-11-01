@@ -126,6 +126,7 @@
   <string name="user_files_browser_progress_dialog_message_create_folder">Creating folder \'%s\'</string>
   <string name="user_files_browser_progress_dialog_message_delete_item">Deleting \'%s\'</string>
   <string name="user_files_browser_progress_dialog_message_upload_file">Uploading file \'%s\'</string>
+  <string name="user_files_browser_progress_dialog_message_upload_image">Uploading Team Image</string>
   <string name="user_files_browser_progress_dialog_message_download_item">Downloading item \'%s\'</string>
   <string name="user_files_browser_error_message_create_folder">Failed to create folder due to \'%s\'.</string>
   <string name="user_files_browser_error_message_delete_item">Failed to delete item due to \'%s\'.</string>
