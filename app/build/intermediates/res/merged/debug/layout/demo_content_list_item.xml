@@ -59,6 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Join Now"
+            android:focusable="false"
             android:visibility="visible"
             android:id="@+id/joinNowBtn" />
     </LinearLayout>

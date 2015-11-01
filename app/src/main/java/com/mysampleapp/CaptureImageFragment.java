@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,7 @@ public class CaptureImageFragment extends DemoFragmentBase {
     private IdentityManager identityManager;
     private String userName;
     private String userId;
+    private String mImageFileName;
 
 
     @Override
@@ -107,17 +109,14 @@ public class CaptureImageFragment extends DemoFragmentBase {
         }
 
 
-        // create Intent to take a picture and return control to the calling application
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        mImageUri = Uri.fromFile(photoFile);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-
-
-
-
-        // start the image capture Intent
-        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-
+        if(photoFile!=null){
+            // create Intent to take a picture and return control to the calling application
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            mImageUri = Uri.fromFile(photoFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            // start the image capture Intent
+            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        }
     }
 
     @Override
@@ -125,6 +124,8 @@ public class CaptureImageFragment extends DemoFragmentBase {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
+                File file = new File(getContext().getExternalCacheDir(), mImageFileName);
+
                 imageView.setImageURI(mImageUri);
 
             }
@@ -136,15 +137,13 @@ public class CaptureImageFragment extends DemoFragmentBase {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = this.getContext().getExternalFilesDir(null);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
 
+        File outputDir = getContext().getCacheDir(); // context being the Activity pointer
+        File outputFile = File.createTempFile(imageFileName, ".jpg", storageDir);
+        mImageFileName =  imageFileName + ".jpg";
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
+        mCurrentPhotoPath = "file:" + outputFile.getAbsolutePath();
+        return outputFile;
     }
 
     private void uploadImage(){

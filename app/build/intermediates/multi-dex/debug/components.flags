@@ -28,10 +28,6 @@
     <init>();
 }
 
--keep class com.mysampleapp.TeamActivity {
-    <init>();
-}
-
 -keep class com.amazonaws.mobileconnectors.s3.transferutility.TransferService {
     <init>();
 }

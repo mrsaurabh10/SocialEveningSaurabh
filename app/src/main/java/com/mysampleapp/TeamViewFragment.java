@@ -29,7 +29,10 @@ import com.mysampleapp.demo.content.ContentListItem;
 import com.mysampleapp.demo.content.ContentListViewAdapter;
 import com.software.shell.fab.ActionButton;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import bolts.Capture;
 
@@ -37,7 +40,7 @@ import bolts.Capture;
 /**
  * Created by apple on 30/10/15.
  */
-public class TeamViewFragment extends DemoFragmentBase implements View.OnClickListener,  AdapterView.OnItemClickListener {
+public class TeamViewFragment extends DemoFragmentBase implements AdapterView.OnItemClickListener {
 
     private static final String S3_PREFIX_PUBLIC = "public/";
     private UserFileManager userFileManager;
@@ -65,10 +68,11 @@ public class TeamViewFragment extends DemoFragmentBase implements View.OnClickLi
         super.onViewCreated(view, savedInstanceState);
 
         ActionButton addImage = (ActionButton) view.findViewById(R.id.createTeam_action_button);
-        addImage.setButtonColor(R.color.com_facebook_blue);
+        addImage.setButtonColor(R.color.fab_material_red_900);
         addImage.setImageResource(R.drawable.fab_plus_icon);
         listView = (ListView) view.findViewById(R.id.teamlistView);
         listView.setOnItemClickListener(this);
+        listView.setClickable(true);
 
         addImage.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -213,10 +217,6 @@ public class TeamViewFragment extends DemoFragmentBase implements View.OnClickLi
     }
 
 
-    @Override
-    public void onClick(View view) {
-
-    }
 
     private void captureImageFragment(){
         CaptureImageFragment fragment = new CaptureImageFragment();
@@ -226,8 +226,50 @@ public class TeamViewFragment extends DemoFragmentBase implements View.OnClickLi
                 .commit();
     }
 
+    private void challengeFragment(){
+        CaptureImageFragment fragment = new CaptureImageFragment();
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, fragment)
+                .commit();
+    }
+
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        ContentListItem item = contentListItems.getItem(i);
+        Map<String,String> usersMetadata = item.getMetaData();
+        ArrayList<String> usersList = new ArrayList<String>();
+        if (usersMetadata!=null){
+
+            String owner = usersMetadata.get("team-owner");
+            if(owner != null){
+                usersList.add(owner);
+            }
+
+            String users = usersMetadata.get("team-users");
+            if(users != null){
+                String[] usersArray = users.split(";");
+                ArrayList<String> usersArrayList = new ArrayList<>(Arrays.asList(usersArray));
+                usersList.addAll(usersArrayList);
+            }
+        }
+
+
+        // get the users List
+        // display the page with list of users
+        // display a UI to show hardcoded challenge
+        // The UI should be swipeable
+        // In each UI it should have sendChallenge Button
+        // sendChallenge button should send a notification
+        // Notification should have a accept button
+
+        ChallengeTeamFragment fragment = new ChallengeTeamFragment();
+        fragment.setUsersList(usersList);
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, fragment)
+                .commit();
+
 
     }
 

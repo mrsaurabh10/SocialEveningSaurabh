@@ -165,6 +165,7 @@ android/support/v4/app/FragmentManagerImpl$3.class
 com/mysampleapp/R.class
 android/support/v4/media/MediaBrowserCompat$MediaItem$Flags.class
 android/support/v7/app/ActionBarActivity.class
+com/mysampleapp/demo/DemoFragmentBase.class
 com/amazonaws/mobileconnectors/s3/transferutility/TransferUtility.class
 android/support/v4/media/session/MediaSessionCompat$Token.class
 android/support/v4/app/ActivityCompatApi23.class
@@ -268,6 +269,7 @@ com/amazonaws/AmazonWebServiceRequest.class
 android/support/v4/view/ViewCompatKitKat.class
 com/amazonaws/auth/STSSessionCredentials.class
 android/support/v4/app/FragmentTransaction.class
+com/mysampleapp/TeamViewFragment.class
 android/support/v4/app/ActivityCompat.class
 android/support/annotation/BoolRes.class
 android/support/v4/media/MediaMetadataCompat.class
@@ -427,7 +429,6 @@ android/support/v4/app/FragmentManagerImpl$FragmentTag.class
 com/amazonaws/mobile/user/signin/FacebookSignInProvider.class
 android/support/v4/app/FragmentManager$OnBackStackChangedListener.class
 com/google/android/gms/internal/zzkc.class
--keep class com.mysampleapp.TeamActivity { <init>(); }
 android/support/v4/media/VolumeProviderCompat$1.class
 com/google/gson/annotations/Expose.class
 com/google/android/gms/auth/AccountChangeEventsRequest.class

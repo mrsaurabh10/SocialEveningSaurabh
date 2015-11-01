@@ -5,7 +5,6 @@
 -keep class com.mysampleapp.SplashActivity { <init>(); }
 -keep class com.mysampleapp.SignInActivity { <init>(); }
 -keep class com.mysampleapp.MainActivity { <init>(); }
--keep class com.mysampleapp.TeamActivity { <init>(); }
 -keep class com.amazonaws.mobileconnectors.s3.transferutility.TransferService { <init>(); }
 -keep class com.amazonaws.mobile.downloader.service.DownloadService { <init>(); }
 -keep class com.amazonaws.mobile.downloader.service.NetworkStateListener { <init>(); }

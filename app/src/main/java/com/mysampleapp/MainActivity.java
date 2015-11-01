@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, "Please install the app ");
+        intent.putExtra(Intent.EXTRA_TEXT, "Please install the app from the following location https://s3.amazonaws.com/socialeveningsaurabh-userfiles-mobilehub-147615793/download/SocialEvening.apk ");
 
         setShareIntent( intent);
 
@@ -271,24 +271,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         final FragmentManager fragmentManager = this.getSupportFragmentManager();
-//        if (fragmentManager.findFragmentByTag(HomeDemoFragment.class.getSimpleName()) == null) {
-//            final Class fragmentClass = HomeDemoFragment.class;
-//            // if we aren't on the home fragment, navigate home.
-//            final Fragment fragment = Fragment.instantiate(this, fragmentClass.getName());
-//
-//            fragmentManager
-//                .beginTransaction()
-//                .replace(R.id.main_fragment_container, fragment, fragmentClass.getSimpleName())
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//                .commit();
-//
-//            // Set the title for the fragment.
-//            final ActionBar actionBar = this.getSupportActionBar();
-//            if (actionBar != null) {
-//                actionBar.setTitle(getString(R.string.app_name));
-//            }
-//            return;
-//        }
+        if (fragmentManager.findFragmentByTag(TeamViewFragment.class.getSimpleName()) == null) {
+            final Class fragmentClass = TeamViewFragment.class;
+            // if we aren't on the home fragment, navigate home.
+            final Fragment fragment = Fragment.instantiate(this, fragmentClass.getName());
+
+            fragmentManager
+                .beginTransaction()
+                .replace(R.id.main_fragment_container, fragment, fragmentClass.getSimpleName())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
+
+            // Set the title for the fragment.
+            final ActionBar actionBar = this.getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setTitle(getString(R.string.app_name));
+            }
+            return;
+        }
         super.onBackPressed();
     }
 
